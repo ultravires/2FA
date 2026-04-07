@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var showingSettings = false
     @State private var searchText = ""
     @Environment(\.openWindow) private var openWindow
+    @EnvironmentObject private var toastManager: ToastManager
     @AppStorage("show_next_token") private var showNextToken = false
     /// 随语言变化刷新界面；勿在根视图用 `.id(appLanguage)`，否则会关掉已打开的 Sheet。
     @AppStorage("app_language") private var appLanguage = "en"
@@ -87,6 +88,25 @@ struct ContentView: View {
             .sheet(isPresented: $showingSettings) {
                 SettingsView(tokenStore: viewModel.tokenStore)
             }
+            .overlay(alignment: .top) {
+                toastBanner
+            }
+            .animation(.spring(response: 0.35, dampingFraction: 0.82), value: toastManager.message)
+        }
+    }
+
+    @ViewBuilder
+    private var toastBanner: some View {
+        if let text = toastManager.message {
+            Text(text)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 11)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .shadow(color: .black.opacity(0.12), radius: 10, y: 4)
+                .padding(.top, 10)
+                .transition(.move(edge: .top).combined(with: .opacity))
         }
     }
 

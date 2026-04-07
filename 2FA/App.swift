@@ -4,6 +4,7 @@ import SwiftUI
 @main
 struct _FAApp: App {
     @StateObject private var tokenStore = TokenStore()
+    @StateObject private var toastManager = ToastManager()
     @AppStorage("app_theme") private var appTheme: String = "System"
     @AppStorage("app_language") private var appLanguage: String = "en"
 
@@ -11,6 +12,7 @@ struct _FAApp: App {
         WindowGroup {
             ContentView(viewModel: TokenListViewModel(tokenStore: tokenStore))
                 .environmentObject(tokenStore)
+                .environmentObject(toastManager)
                 .preferredColorScheme(colorScheme)
                 .environment(\.locale, .init(identifier: appLanguage))
                 .frame(minWidth: 600, minHeight: 400)
@@ -24,6 +26,7 @@ struct _FAApp: App {
         Window(L10n.Scanner.windowTitle, id: "scanner") {
             ScannerView()
                 .environmentObject(tokenStore)
+                .environmentObject(toastManager)
         }
     }
     

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ScannerView: View {
     @EnvironmentObject private var tokenStore: TokenStore
+    @EnvironmentObject private var toastManager: ToastManager
     @StateObject private var screenScanner = ScreenQRScanner()
     @AppStorage("app_language") private var appLanguage = "en"
 
@@ -80,12 +81,22 @@ struct ScannerView: View {
                 }
                 tokenStore.addToken(token)
                 let name = token.issuer.isEmpty ? token.account : token.issuer
-                screenScanner.statusText = L10n.Scanner.added(name)
+                toastManager.show(L10n.Scanner.added(name))
+                closeScannerWindow()
+                NSApp.activate(ignoringOtherApps: true)
+                DispatchQueue.main.async {
+                    NSApp.windows.first { $0.title == "2FA" && $0.isVisible }?.makeKeyAndOrderFront(nil)
+                }
             }
         }
     }
 
     private func closeScannerWindow() {
-        NSApp.keyWindow?.close()
+        let scannerTitle = L10n.Scanner.windowTitle
+        if let w = NSApp.windows.first(where: { $0.title == scannerTitle }) {
+            w.close()
+        } else {
+            NSApp.keyWindow?.close()
+        }
     }
 }
