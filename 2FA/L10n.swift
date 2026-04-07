@@ -37,6 +37,7 @@ enum L10n {
         static var emptySubtitle: String { text("main.empty_subtitle") }
         static var menuScan: String { text("main.menu_scan") }
         static var menuManual: String { text("main.menu_manual") }
+        static var helpTapCopy: String { text("main.help_tap_copy") }
     }
 
     enum Common {
@@ -46,6 +47,11 @@ enum L10n {
         static var close: String { text("common.close") }
         static var delete: String { text("common.delete") }
         static var unknown: String { text("common.unknown") }
+        static var copy: String { text("common.copy") }
+    }
+
+    enum Toast {
+        static var copied: String { text("toast.copied") }
     }
 
     enum Settings {
@@ -118,12 +124,15 @@ enum L10n {
         "main.empty_subtitle": "Use the + menu to scan or add manually.",
         "main.menu_scan": "Scan QR Code",
         "main.menu_manual": "Enter Manually",
+        "main.help_tap_copy": "Click to copy verification code",
         "common.cancel": "Cancel",
         "common.save": "Save",
         "common.done": "Done",
         "common.close": "Close",
         "common.delete": "Delete",
         "common.unknown": "Unknown",
+        "common.copy": "Copy",
+        "toast.copied": "Copied",
         "settings.title": "Settings",
         "settings.display": "Display",
         "settings.show_next": "Show Next Token",
@@ -175,12 +184,15 @@ enum L10n {
         "main.empty_subtitle": "点击右上角 + 扫码或手动添加",
         "main.menu_scan": "扫描二维码",
         "main.menu_manual": "手动输入",
+        "main.help_tap_copy": "点击复制验证码",
         "common.cancel": "取消",
         "common.save": "保存",
         "common.done": "完成",
         "common.close": "关闭",
         "common.delete": "删除",
         "common.unknown": "未知",
+        "common.copy": "复制",
+        "toast.copied": "已复制",
         "settings.title": "设置",
         "settings.display": "显示",
         "settings.show_next": "显示下一个令牌",
@@ -232,12 +244,15 @@ enum L10n {
         "main.empty_subtitle": "點右上角 + 掃碼或手動新增",
         "main.menu_scan": "掃描 QR 碼",
         "main.menu_manual": "手動輸入",
+        "main.help_tap_copy": "點擊複製驗證碼",
         "common.cancel": "取消",
         "common.save": "儲存",
         "common.done": "完成",
         "common.close": "關閉",
         "common.delete": "刪除",
         "common.unknown": "未知",
+        "common.copy": "複製",
+        "toast.copied": "已複製",
         "settings.title": "設定",
         "settings.display": "顯示",
         "settings.show_next": "顯示下一個令牌",

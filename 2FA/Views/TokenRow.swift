@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct TokenRow: View {
@@ -10,6 +11,8 @@ struct TokenRow: View {
     let nextOtp: String?
 
     var onDelete: () -> Void
+
+    @State private var showCopiedToast = false
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -68,10 +71,40 @@ struct TokenRow: View {
         .padding(.horizontal, 4)
         .padding(.vertical, 12)
         .contentShape(Rectangle())
+        .help(L10n.Main.helpTapCopy)
+        .onTapGesture {
+            copyOTPToPasteboard()
+        }
+        .overlay {
+            if showCopiedToast {
+                Text(L10n.Toast.copied)
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                    .background(.ultraThinMaterial, in: Capsule())
+                    .shadow(color: .black.opacity(0.15), radius: 6, y: 2)
+                    .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .animation(.spring(response: 0.28, dampingFraction: 0.82), value: showCopiedToast)
         .contextMenu {
+            Button(L10n.Common.copy, systemImage: "doc.on.doc") {
+                copyOTPToPasteboard()
+            }
             Button(L10n.Common.delete, systemImage: "trash", role: .destructive) {
                 onDelete()
             }
+        }
+    }
+
+    private func copyOTPToPasteboard() {
+        let digits = String(otp.filter(\.isNumber))
+        guard !digits.isEmpty else { return }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(digits, forType: .string)
+        showCopiedToast = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            showCopiedToast = false
         }
     }
 
