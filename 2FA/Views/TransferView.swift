@@ -41,7 +41,7 @@ struct QRCodeView: View {
 struct TransferView: View {
     let tokens: [Token]
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("app_language") private var appLanguage = "en"
+    @State private var pageIndex = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -58,40 +58,112 @@ struct TransferView: View {
 
             Divider()
 
-            ScrollView {
-                VStack(spacing: 30) {
+            if tokens.isEmpty {
+                Spacer()
+                Text(L10n.Main.emptyTitle)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Spacer()
+            } else {
+                VStack(spacing: 0) {
                     Text(L10n.Transfer.hint)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
-                        .padding()
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
 
-                    ForEach(tokens) { token in
-                        VStack(spacing: 10) {
-                            Text(token.issuer)
-                                .font(.headline)
-                            Text(token.account)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-
-                            QRCodeView(string: generateOtpAuthUrl(for: token), size: 200)
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(10)
-                                .shadow(radius: 5)
-                        }
-                        .padding()
-                        .background(Color(nsColor: .windowBackgroundColor))
-                        .cornerRadius(15)
+                    ZStack {
+                        tokenPage(for: tokens[pageIndex])
+                            .id(pageIndex)
+                            .transition(.opacity)
                     }
+                    .animation(.easeInOut(duration: 0.2), value: pageIndex)
+                    .frame(height: 360)
+
+                    if tokens.count > 1 {
+                        HStack(spacing: 7) {
+                            ForEach(0..<tokens.count, id: \.self) { i in
+                                Button {
+                                    pageIndex = i
+                                } label: {
+                                    Circle()
+                                        .fill(i == pageIndex ? Color.accentColor : Color.secondary.opacity(0.35))
+                                        .frame(width: 7, height: 7)
+                                }
+                                .buttonStyle(.plain)
+                                .help(L10n.Transfer.pageIndex(i + 1, tokens.count))
+                            }
+                        }
+                        .padding(.bottom, 4)
+                    }
+
+                    HStack(spacing: 20) {
+                        Button {
+                            pageIndex = max(0, pageIndex - 1)
+                        } label: {
+                            Image(systemName: "chevron.left.circle.fill")
+                                .font(.title2)
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                        .buttonStyle(.borderless)
+                        .disabled(pageIndex == 0)
+                        .help(L10n.Transfer.previous)
+                        .keyboardShortcut(.leftArrow, modifiers: [])
+
+                        Text(L10n.Transfer.pageIndex(pageIndex + 1, tokens.count))
+                            .font(.system(.body, design: .rounded))
+                            .foregroundColor(.secondary)
+                            .frame(minWidth: 120)
+
+                        Button {
+                            pageIndex = min(tokens.count - 1, pageIndex + 1)
+                        } label: {
+                            Image(systemName: "chevron.right.circle.fill")
+                                .font(.title2)
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                        .buttonStyle(.borderless)
+                        .disabled(pageIndex >= tokens.count - 1)
+                        .help(L10n.Transfer.next)
+                        .keyboardShortcut(.rightArrow, modifiers: [])
+                    }
+                    .padding(.vertical, 14)
                 }
-                .padding()
             }
         }
-        .frame(width: 500, height: 700)
+        .frame(width: 400, height: 540)
         .onAppear {
             NSApp.activate(ignoringOtherApps: true)
+            if pageIndex >= tokens.count {
+                pageIndex = max(0, tokens.count - 1)
+            }
         }
+    }
+
+    @ViewBuilder
+    private func tokenPage(for token: Token) -> some View {
+        VStack(spacing: 12) {
+            Text(token.issuer)
+                .font(.headline)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+            Text(token.account)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+
+            QRCodeView(string: generateOtpAuthUrl(for: token), size: 220)
+                .padding(12)
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(color: .black.opacity(0.12), radius: 5, y: 2)
+        }
+        .padding(.horizontal, 28)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func generateOtpAuthUrl(for token: Token) -> String {

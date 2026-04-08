@@ -113,6 +113,11 @@ enum L10n {
     enum Transfer {
         static var title: String { text("transfer.title") }
         static var hint: String { text("transfer.hint") }
+        static var previous: String { text("transfer.previous") }
+        static var next: String { text("transfer.next") }
+        static func pageIndex(_ current: Int, _ total: Int) -> String {
+            formatted("transfer.page_index", current, total)
+        }
     }
 
     // MARK: - en
@@ -174,7 +179,10 @@ enum L10n {
         "scanner_status.no_qr": "No otpauth QR found on screen. Adjust and try again.",
         "scanner_status.recognized": "Recognized otpauth, adding…",
         "transfer.title": "Transfer Tokens",
-        "transfer.hint": "Scan these codes on another device to transfer your accounts.",
+        "transfer.hint": "Swipe or use the buttons to show one QR code at a time. Scan on another device to transfer.",
+        "transfer.previous": "Previous",
+        "transfer.next": "Next",
+        "transfer.page_index": "%d of %d",
     ]
 
     private static let zhHans: [String: String] = [
@@ -234,7 +242,10 @@ enum L10n {
         "scanner_status.no_qr": "未在屏幕中找到 otpauth 二维码，请调整后再次扫描",
         "scanner_status.recognized": "已识别 otpauth，正在添加…",
         "transfer.title": "转移令牌",
-        "transfer.hint": "在另一台设备上扫描这些二维码以转移账户。",
+        "transfer.hint": "可滑动或使用按钮逐页查看二维码，在另一台设备上扫描以转移账户。",
+        "transfer.previous": "上一页",
+        "transfer.next": "下一页",
+        "transfer.page_index": "第 %d / %d 个",
     ]
 
     private static let zhHant: [String: String] = [
@@ -294,6 +305,9 @@ enum L10n {
         "scanner_status.no_qr": "螢幕上找不到 otpauth QR 碼，請調整後再試",
         "scanner_status.recognized": "已辨識 otpauth，正在加入…",
         "transfer.title": "轉移令牌",
-        "transfer.hint": "在另一台裝置上掃描這些 QR 碼以轉移帳戶。",
+        "transfer.hint": "可滑動或使用按鈕逐頁檢視 QR 碼，在另一台裝置上掃描以轉移帳戶。",
+        "transfer.previous": "上一頁",
+        "transfer.next": "下一頁",
+        "transfer.page_index": "第 %d / %d 個",
     ]
 }
