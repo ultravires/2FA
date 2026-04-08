@@ -9,14 +9,9 @@ struct ScannerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Spacer()
-                Text(L10n.Scanner.title)
-                    .font(.headline)
-                Spacer()
-                Button(L10n.Common.close) { closeScannerWindow() }
-                    .keyboardShortcut(.cancelAction)
-            }
+            Text(L10n.Scanner.title)
+                .font(.headline)
+                .frame(maxWidth: .infinity)
             .padding()
             .background(Color(nsColor: .windowBackgroundColor))
 
